@@ -3,17 +3,79 @@
 
 <head>
     <title>President Clicker</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            background-color: #454954;
+            margin: 0;
+            text-align: center;
+        }
+
+        .flex-container {
+            height: 100%;
+            width: 100%;
+            max-width: 960px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .row {
+            width: 100%;
+            border: 1px solid blue;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .face {
+            max-width: 50%;
+            height: 512px;
+            flex: 1;
+        }
+
+        #hillary {
+            background: url("images/hillary.svg");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #trump {
+            background: url("images/trump.svg");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
 </head>
 
 <body>
     <h1>President Clicker</h1>
-    <p id="server-time" />
+    <div class="flex-container">
+        <div class="row">
+            <div id="trump" class="face">
+            </div>
+            <div id="hillary" class="face">
+            </div>
+        </div>
+    </div>
+    <p id="server-time"></p>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js" />
     <script>
         var socket = io();
-        var el = document.getElementById('server-time');
-        socket.on('time', function(timeString) {
-            el.innerHTML = 'Server time: ' + timeString;
+        var el = document.getElementById("server-time");
+        socket.on("time", function(timeString) {
+            el.innerHTML = "Server time: " + timeString;
         });
     </script>
 </body>
