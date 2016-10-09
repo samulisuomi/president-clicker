@@ -14,20 +14,21 @@
         }
 
         .flex-container {
-            height: 100%;
+            min-height: 100%;
             width: 100%;
-            max-width: 960px;
             padding: 0;
             margin: 0;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             flex-wrap: nowrap;
-            justify-content: space-around;
+            justify-content: space-between;
             align-items: center;
         }
 
         .row {
             width: 100%;
+            max-width: 1280px;
+            max-height: 512px;
             border: 1px solid blue;
             padding: 0;
             margin: 0;
@@ -39,38 +40,37 @@
         }
 
         .face {
-            max-width: 50%;
-            height: 512px;
-            flex: 1;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            justify-content: center;
         }
 
-        #hillary {
-            background: url("images/hillary.svg");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-        }
-
-        #trump {
-            background: url("images/trump.svg");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
+        img {
+            max-height: 512px;
+            max-width: 100%;
         }
     </style>
 </head>
 
 <body>
-    <h1>President Clicker</h1>
-    <p>Trump: <span id="trumpScoreWorld"></span> (everybody), <span id="trumpScore">0</span> (you)</p>
-    <p>Hillary: <span id="hillaryScoreWorld"></span> (everybody), <span id="hillaryScore">0</span> (you)</p>
     <div class="flex-container">
+        <header>
+            <h1>President Clicker</h1>
+            <p>Trump: <span id="trumpScoreWorld"></span> (everybody), <span id="trumpScore">0</span> (you)</p>
+            <p>Hillary: <span id="hillaryScoreWorld"></span> (everybody), <span id="hillaryScore">0</span> (you)</p>
+        </header>
         <div class="row">
-            <div id="trump" class="face">
+            <div class="face">
+                <img id="trump" src="images/trump.svg">
             </div>
-            <div id="hillary" class="face">
+            <div class="face">
+                <img id="hillary" src="images/hillary.svg">
             </div>
         </div>
+        <footer>
+            <p>About</p>
+        </footer>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
