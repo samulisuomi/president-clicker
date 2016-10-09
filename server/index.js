@@ -1,7 +1,7 @@
 const app = require("express")();
 const http = require("http").Server(app);
 const fs = require("fs");
-const io = require("socket.io")(http);
+const io = require("socket.io")(http, {path: "/presidentclicker/socket.io"});
 const Big = require("big.js");
 const CronJob = require("cron").CronJob;
 const debugLog = require("debug-log")("debug");

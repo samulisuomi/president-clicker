@@ -75,8 +75,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-        var socket = io(window.location.host.split(":")[0] + ":3000");
-        // var socket = io("37.139.14.210/presidentclicker:3000");
+        var socket;
+        if (window.location.host != "localhost") {
+            socket = io.connect('http://37.139.14.210/presidentclicker/', {
+              path: "/presidentclicker"
+            });
+        } else {
+            socket = io("localhost:3000/presidentclicker");
+        }
+
         var trump = document.getElementById("trump");
         var hillary = document.getElementById("hillary");
         var trumpScoreWorld = document.getElementById("trumpScoreWorld");
