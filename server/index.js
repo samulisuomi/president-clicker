@@ -13,8 +13,8 @@ var hillaryCount;
 
 app.disable("x-powered-by");
 
-app.get("/", function(req, res) {
-    res.send("/");
+app.get("/ping", function(req, res) {
+    res.send("pong");
 });
 
 io.on("connection", function(socket) {
@@ -35,6 +35,7 @@ http.listen(3000, function() {
     var backup = JSON.parse(fs.readFileSync(fileName, "utf8"));
     trumpCount = new Big(backup.t);
     hillaryCount = new Big(backup.h);
+    console.log("process.env.NODE_ENV=" + process.env.NODE_ENV);
     console.log("listening on *:3000");
 });
 
