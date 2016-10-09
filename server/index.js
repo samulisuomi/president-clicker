@@ -23,11 +23,11 @@ io.on("connection", function(socket) {
     debugLog("a user connected");
     socket.on("trump", function(msg) {
         trumpCount = trumpCount.plus(1);
-        socket.broadcast.emit("score.trump", trumpCount)
+        socket.volatile.broadcast.emit("score.trump", trumpCount)
     });
     socket.on("hillary", function(msg) {
         hillaryCount = hillaryCount.plus(1);
-        socket.broadcast.emit("score.hillary", hillaryCount);
+        socket.volatile.broadcast.emit("score.hillary", hillaryCount);
     });
 });
 
