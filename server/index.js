@@ -3,6 +3,7 @@ const http = require("http").Server(app);
 const fs = require("fs");
 const io = require("socket.io")(http, {
     path: "/presidentclicker",
+    transports: ['websocket'],
     origins: "http://presidentclicker.com:* http://localhost:8080" // disable localhost in prod
 });
 const Big = require("big.js");

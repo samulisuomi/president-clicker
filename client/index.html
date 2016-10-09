@@ -89,14 +89,14 @@
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
         var socket;
+        var socketOptions = {
+            path: "/presidentclicker",
+            transports: ["websocket"]
+        }
         if (window.location.host.indexOf("localhost") === -1) {
-            socket = io("http://37.139.14.210", {
-                path: "/presidentclicker"
-            });
+            socket = io("http://37.139.14.210", socketOptions);
         } else {
-            socket = io("localhost:3000", {
-                path: "/presidentclicker"
-            });
+            socket = io("localhost:3000", socketOptions);
         }
 
         var trump = document.getElementById("trump");
