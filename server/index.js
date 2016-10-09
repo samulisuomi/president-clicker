@@ -18,7 +18,7 @@ app.disable("x-powered-by");
 
 app.use(function(req, res, next) {
     if (process.env.NODE_ENV === "production") {
-        res.header("Access-Control-Allow-Origin", "http://presidentclicker.xyz");
+        res.header("Access-Control-Allow-Origin", "http://presidentclicker.com");
     } else {
         res.header("Access-Control-Allow-Origin", "http://localhost:8080");
     }
