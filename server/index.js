@@ -32,9 +32,20 @@ io.on("connection", function(socket) {
 });
 
 http.listen(3000, function() {
-    var backup = JSON.parse(fs.readFileSync(fileName, "utf8"));
-    trumpCount = new Big(backup.t);
-    hillaryCount = new Big(backup.h);
+    var backup;
+    try {
+        backup = JSON.parse(fs.readFileSync(fileName, "utf8"));
+        trumpCount = new Big(backup.t);
+        hillaryCount = new Big(backup.h);
+    } catch (err) {
+        if (err.code === "ENOENT") {
+            console.log("Backup not found, starting score from zero!");
+            trumpCount = new Big(0);
+            hillaryCount = new Big(0);
+        } else {
+            throw err;
+        }
+    }
     console.log("process.env.NODE_ENV=" + process.env.NODE_ENV);
     console.log("listening on *:3000");
 });
