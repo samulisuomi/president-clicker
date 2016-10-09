@@ -3,7 +3,7 @@ const http = require("http").Server(app);
 const fs = require("fs");
 const io = require("socket.io")(http, {
     path: "/presidentclicker",
-    origins: "http://presidentclicker.xyz:* http://localhost:8080"
+    origins: "http://presidentclicker.com:* http://localhost:8080" // disable localhost in prod
 });
 const Big = require("big.js");
 const CronJob = require("cron").CronJob;
