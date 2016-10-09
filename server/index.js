@@ -1,7 +1,10 @@
 const app = require("express")();
 const http = require("http").Server(app);
 const fs = require("fs");
-const io = require("socket.io")(http, {path: "/presidentclicker/socket.io"});
+const io = require("socket.io")(http, {
+    path: "/presidentclicker",
+    origins: "http://presidentclicker.xyz:* http://localhost:8080"
+});
 const Big = require("big.js");
 const CronJob = require("cron").CronJob;
 const debugLog = require("debug-log")("debug");
@@ -12,6 +15,17 @@ var trumpCount;
 var hillaryCount;
 
 app.disable("x-powered-by");
+
+app.use(function(req, res, next) {
+    if (process.env.NODE_ENV === "production") {
+        res.header("Access-Control-Allow-Origin", "http://presidentclicker.xyz");
+    } else {
+        res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+    }
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 app.get("/ping", function(req, res) {
     res.send("pong");

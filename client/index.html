@@ -76,12 +76,14 @@
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
         var socket;
-        if (window.location.host != "localhost") {
-            socket = io.connect('http://37.139.14.210/presidentclicker/', {
-              path: "/presidentclicker"
+        if (window.location.host.indexOf("localhost") === -1) {
+            socket = io("http://37.139.14.210", {
+                path: "/presidentclicker"
             });
         } else {
-            socket = io("localhost:3000/presidentclicker");
+            socket = io("localhost:3000", {
+                path: "/presidentclicker"
+            });
         }
 
         var trump = document.getElementById("trump");
