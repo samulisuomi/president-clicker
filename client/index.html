@@ -2,159 +2,63 @@
 <html>
 
 <head>
-    <title>President Clicker</title>
+    <title>President Clicker 2016</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+    <link href="styles/style.css" rel="stylesheet">
+    <meta name="theme-color" content="#ffffff">
     <style>
-        html, body {
-            height: 100%;
-            background-color: #273251;
-            margin: 0;
-            text-align: center;
-            color: pink;
-            font-size: 16px;
-        }
 
-        body {
-            padding: 12px;
-        }
-
-        h1 {
-            font-size: 200%;
-        }
-
-        p {
-            font-size: 100%;
-            line-height: 1.2;
-        }
-
-        .flex-container {
-            min-height: 100%;
-            width: 100%;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            flex-wrap: nowrap;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .row {
-            width: 100%;
-            max-width: 1280px;
-            max-height: 512px;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        .face {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: nowrap;
-            justify-content: center;
-        }
-
-        img {
-            max-height: 512px;
-            max-width: 100%;
-        }
     </style>
 </head>
 
 <body>
     <div class="flex-container">
         <header>
-            <h1>President Clicker</h1>
-            <p>Trump: <span id="trumpScoreWorld"></span> (everybody), <span id="trumpScore">0</span> (you)</p>
-            <p>Hillary: <span id="hillaryScoreWorld"></span> (everybody), <span id="hillaryScore">0</span> (you)</p>
+            <h1>President Clicker 2016</h1>
         </header>
-        <div class="row">
-            <div class="face">
+        <div id="scoreWorld" class="row">
+            <div class="rowItem">
+                <span id="trumpScoreWorld" class="scoreTextWorld">?</span>
+            </div>
+            <div class="rowItem">
+                <span id="hillaryScoreWorld" class="scoreTextWorld">?</span>
+            </div>
+        </div>
+        <div id="faces" class="row">
+            <div class="rowItem">
                 <img id="trump" src="images/trump.svg">
             </div>
-            <div class="face">
+            <div class="rowItem">
                 <img id="hillary" src="images/hillary.svg">
+            </div>
+        </div>
+        <div id="scoreYou" class="row">
+            <div class="rowItem">
+                <span id="trumpScore" class="scoreText">0</span>
+            </div>
+            <div class="rowItem">
+                <span id="hillaryScore" class="scoreText">0</span>
             </div>
         </div>
         <footer>
             <p>About</p>
         </footer>
+        <ins class="adsbygoogle" style="display:inline-block;width:320px;height:100px" data-ad-client="ca-pub-7841471730070533" data-ad-slot="7883156205"></ins>
     </div>
+    <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script src="scripts/script.js"></script>
     <script>
-        var socket;
-        var socketOptions = {
-            path: "/presidentclicker",
-            transports: ["websocket"]
-        }
-        if (window.location.host.indexOf("localhost") === -1) {
-            socket = io("http://37.139.14.210", socketOptions);
-        } else {
-            socket = io("localhost:3000", socketOptions);
-        }
-
-        var trump = document.getElementById("trump");
-        var hillary = document.getElementById("hillary");
-        var trumpScoreWorld = document.getElementById("trumpScoreWorld");
-        var hillaryScoreWorld = document.getElementById("hillaryScoreWorld");
-        var trumpScoreWorldCount = -1;
-        var hillaryScoreWorldCount = -1;
-        var trumpScore = document.getElementById("trumpScore");
-        var hillaryScore = document.getElementById("hillaryScore");
-        var trumpScoreCount = 0;
-        var hillaryScoreCount = 0;
-
-        trump.onclick = function() {
-            socket.emit("trump", "1");
-            trumpScoreCount++;
-            trumpScore.innerHTML = trumpScoreCount;
-            if (trumpScoreWorldCount !== -1) {
-                trumpScoreWorldCount++;
-                trumpScoreWorld.innerHTML = trumpScoreWorldCount;
-            }
-            return false;
-        };
-
-        hillary.onclick = function() {
-            socket.emit("hillary", "1");
-            hillaryScoreCount++;
-            hillaryScore.innerHTML = hillaryScoreCount;
-            if (hillaryScoreWorldCount !== -1) {
-                hillaryScoreWorldCount++;
-                hillaryScoreWorld.innerHTML = hillaryScoreWorldCount;
-            }
-            return false;
-        };
-
-        socket.on("score.trump", function(msg) {
-            trumpScoreWorldCount = Number(msg);
-            trumpScoreWorld.innerHTML = trumpScoreWorldCount;
-        });
-
-        socket.on("score.hillary", function(msg) {
-            hillaryScoreWorldCount = Number(msg);
-            hillaryScoreWorld.innerHTML = hillaryScoreWorldCount;
-        });
-
-        function preventZoom(e) {
-            var t2 = e.timeStamp;
-            var t1 = e.currentTarget.dataset.lastTouch || t2;
-            var dt = t2 - t1;
-            var fingers = e.touches.length;
-            e.currentTarget.dataset.lastTouch = t2;
-
-            if (!dt || dt > 500 || fingers > 1) return; // not double-tap
-
-            e.preventDefault();
-            e.target.click();
-        }
+        (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+
 </body>
 
 </html>
