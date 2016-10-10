@@ -1,5 +1,4 @@
-html,
-body {
+html, body {
     width: 100%;
     min-height: 100%;
     margin: 0;
@@ -13,11 +12,12 @@ body {
 
 @media only screen and (max-width: 768px) {
     body {
-        font-size: 12px;
+        font-size: 13px;
     }
 }
 
 html {
+    background-color: black;
     background: url(/images/bg.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -29,6 +29,7 @@ h1 {
     font-size: 400%;
     font-weight: 900;
     text-transform: uppercase;
+    text-shadow: 6px 6px black;
 }
 
 p {
@@ -38,7 +39,10 @@ p {
 
 header {
     font-weight: 400;
-    padding: 16px;
+    padding-top: 0;
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-bottom: 0;
 }
 
 .flex-container {
@@ -65,16 +69,14 @@ header {
 }
 
 .rowItem {
-    padding: 16px;
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-top: 9px;
+    padding-bottom: 9px;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: center;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
     width: 50%;
 }
 
@@ -97,6 +99,19 @@ header {
 
 #hillaryScoreWorld {
     color: #1c3782;
+}
+
+#problem {
+    display: none;
+    padding-bottom: 18px;
+}
+
+.faces, img {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 img {

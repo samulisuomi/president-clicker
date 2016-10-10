@@ -4,11 +4,13 @@ $(function() {
         path: "/presidentclicker",
         transports: ["websocket"]
     }
+
     if (window.location.host.indexOf("localhost") === -1) {
         socket = io("http://37.139.14.210", socketOptions);
     } else {
         socket = io("localhost:3000", socketOptions);
     }
+
     var trump = document.getElementById("trump");
     var hillary = document.getElementById("hillary");
     var trumpScoreWorld = document.getElementById("trumpScoreWorld");
@@ -19,6 +21,16 @@ $(function() {
     var hillaryScore = document.getElementById("hillaryScore");
     var trumpScoreCount = 0;
     var hillaryScoreCount = 0;
+
+    socket.on("connect", function(err) {
+        $("#problem").hide();
+    });
+
+    socket.io.on("connect_error", function(err) {
+        trumpScoreWorldCount = -1;
+        hillaryScoreWorldCount = -1;
+        $("#problem").show();
+    });
 
     trump.onclick = function() {
         socket.emit("trump", "1");
