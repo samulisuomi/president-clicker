@@ -5,7 +5,7 @@ const io = require("socket.io")(http, {
     path: "/presidentclicker",
     transports: ['websocket'],
     origins: process.env.NODE_ENV === "production" ?
-        "http://presidentclicker.com:*" : "http://localhost:8080"
+      "http://presidentclicker.com:*" : "http://localhost:8080" // disable localhost in prod
 });
 const Big = require("big.js");
 const CronJob = require("cron").CronJob;
@@ -34,16 +34,16 @@ app.get("/ping", function(req, res) {
 });
 
 io.on("connection", function(socket) {
-    socket.emit("score.trump", trumpCount)
-    socket.emit("score.hillary", hillaryCount);
+    socket.emit("s.t", trumpCount)
+    socket.emit("s.h", hillaryCount);
     debugLog("a user connected");
-    socket.on("trump", function(msg) {
+    socket.on("t", function(msg) {
         trumpCount = trumpCount.plus(1);
-        socket.volatile.broadcast.emit("score.trump", trumpCount)
+        socket.volatile.broadcast.emit("s.t", trumpCount)
     });
-    socket.on("hillary", function(msg) {
+    socket.on("h", function(msg) {
         hillaryCount = hillaryCount.plus(1);
-        socket.volatile.broadcast.emit("score.hillary", hillaryCount);
+        socket.volatile.broadcast.emit("s.h", hillaryCount);
     });
 });
 
