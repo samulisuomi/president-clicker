@@ -101,10 +101,12 @@ setInterval(function() {
     saveFile(fileName);
 }, 10000);
 
-// Manually carbage collect every 30 secs if flag set
+// Manually garbage collect every 30 secs if flag set
 setInterval(function() {
     if (global.gc) {
         debugLog("Calling global.gc()");
+        // POISTA:
+        console.log("Calling global.gc()");
         global.gc();
     } else {
         console.log('Garbage collection unavailable.  Pass --expose-gc ' +
