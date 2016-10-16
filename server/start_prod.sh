@@ -1,1 +1,2 @@
-pm2 start index.js --node-args="--expose-gc" --log-date-format="YYYY-MM-DD HH:mm:ss Z" -f
+pm2 delete index
+pm2 start index.js --node-args="--expose-gc" --log-date-format="YYYY-MM-DD HH:mm:ss Z"
