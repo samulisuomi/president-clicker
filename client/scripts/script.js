@@ -1,7 +1,7 @@
 $(function() {
     var socket;
     var socketOptions = {
-        path: "/presidentclicker",
+        path: "/presidentclicker/socket.io",
         transports: ["websocket"]
     }
 

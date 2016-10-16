@@ -2,7 +2,7 @@ const app = require("express")();
 const http = require("http").Server(app);
 const fs = require("fs");
 const io = require("socket.io")(http, {
-    path: "/presidentclicker",
+    path: "/presidentclicker/socket.io",
     transports: ['websocket'],
     origins: process.env.NODE_ENV === "production" ?
       "http://presidentclicker.com:*" : "http://localhost:8080" // disable localhost in prod
