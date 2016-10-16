@@ -105,8 +105,6 @@ setInterval(function() {
 setInterval(function() {
     if (global.gc) {
         debugLog("Calling global.gc()");
-        // POISTA:
-        console.log("Calling global.gc()");
         global.gc();
     } else {
         console.log('Garbage collection unavailable.  Pass --expose-gc ' +
