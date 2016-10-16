@@ -69,7 +69,11 @@ http.listen(3000, function() {
 const exitHandler = function(options, err) {
     console.log("exitHandler");
     if (err) console.log("- " + err.stack);
-    fs.writeFileSync(fileName + ".exit", JSON.stringify({"t": trumpCount.toFixed(), "h": hillaryCount.toFixed()}), "utf8");
+    try {
+      fs.writeFileSync(fileName + ".exit", JSON.stringify({"t": trumpCount.toFixed(), "h": hillaryCount.toFixed()}), "utf8");
+    } catch (err) {
+        console.log("Error writing exit file");
+    }
     if (options.exit) process.exit();
 }
 
@@ -97,3 +101,14 @@ process.on("uncaughtException", exitHandler.bind(null, {exit:true}));
 setInterval(function() {
     saveFile(fileName);
 }, 10000);
+
+// Manually carbage collect every 30 secs if flag set
+setInterval(function() {
+    if (global.gc) {
+        debugLog("Calling global.gc()");
+        global.gc();
+    } else {
+        console.log('Garbage collection unavailable.  Pass --expose-gc ' +
+            'when launching node to enable forced garbage collection.');
+    }
+}, 30000);
