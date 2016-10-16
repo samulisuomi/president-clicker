@@ -11,22 +11,19 @@ $(function() {
         socket = io("localhost:3000", socketOptions);
     }
 
-    var trump = document.getElementById("trump");
-    var hillary = document.getElementById("hillary");
-    var trumpScoreWorld = document.getElementById("trumpScoreWorld");
-    var hillaryScoreWorld = document.getElementById("hillaryScoreWorld");
+    var trump = $("#trump");
+    var hillary = $("#hillary");
+    var trumpScoreWorld = $("#trumpScoreWorld");
+    var hillaryScoreWorld = $("#hillaryScoreWorld");
     var trumpScoreWorldCount = null;
     var hillaryScoreWorldCount = null;
-    var trumpScore = document.getElementById("trumpScore");
-    var hillaryScore = document.getElementById("hillaryScore");
+    var trumpScore = $("#trumpScore");
+    var hillaryScore = $("#hillaryScore");
     var trumpScoreCount = null;
     var hillaryScoreCount = null;
 
     if (typeof(Storage) !== "undefined") {
-        console.log(localStorage.h);
-        console.log(localStorage.t);
         if (localStorage.h && localStorage.t) {
-            console.log(":)");
             trumpScoreCount = new Big(localStorage.t);
             hillaryScoreCount = new Big(localStorage.h);
         } else {
@@ -39,13 +36,12 @@ $(function() {
         hillaryScoreCount = new Big(0);
     }
 
-    trumpScore.innerHTML = trumpScoreCount.toFixed();
-    hillaryScore.innerHTML = hillaryScoreCount.toFixed();
+    trumpScore.text(trumpScoreCount.toFixed());
+    hillaryScore.text(hillaryScoreCount.toFixed());
 
     function saveToLocalStorage(key, value) {
         if (typeof(Storage) !== "undefined") {
             localStorage.setItem(key, value);
-            console.log("saved");
         }
     }
 
@@ -59,38 +55,38 @@ $(function() {
         $("#problem").show();
     });
 
-    trump.onclick = function() {
+    trump.click(function() {
         socket.emit("t", "1");
         trumpScoreCount = trumpScoreCount.plus(1);
         saveToLocalStorage("t", trumpScoreCount.toFixed());
-        trumpScore.innerHTML = trumpScoreCount.toFixed();
+        trumpScore.text(trumpScoreCount.toFixed());
         if (trumpScoreWorldCount !== null) {
             trumpScoreWorldCount = trumpScoreWorldCount.plus(1);
-            trumpScoreWorld.innerHTML = trumpScoreWorldCount.toFixed();
+            trumpScoreWorld.text(trumpScoreWorldCount.toFixed());
         }
         return false;
-    };
+    });
 
-    hillary.onclick = function() {
+    hillary.click(function() {
         socket.emit("h", "1");
         hillaryScoreCount = hillaryScoreCount.plus(1);
         saveToLocalStorage("h", hillaryScoreCount.toFixed());
-        hillaryScore.innerHTML = hillaryScoreCount.toFixed();
+        hillaryScore.text(hillaryScoreCount.toFixed());
         if (hillaryScoreWorldCount !== null) {
             hillaryScoreWorldCount = hillaryScoreWorldCount.plus(1);
-            hillaryScoreWorld.innerHTML = hillaryScoreWorldCount.toFixed();
+            hillaryScoreWorld.text(hillaryScoreWorldCount.toFixed());
         }
         return false;
-    };
+    });
 
     socket.on("s.t", function(msg) {
         trumpScoreWorldCount = new Big(msg);
-        trumpScoreWorld.innerHTML = trumpScoreWorldCount.toFixed();
+        trumpScoreWorld.text(trumpScoreWorldCount.toFixed());
     });
 
     socket.on("s.h", function(msg) {
         hillaryScoreWorldCount = new Big(msg);
-        hillaryScoreWorld.innerHTML = hillaryScoreWorldCount.toFixed();
+        hillaryScoreWorld.text(hillaryScoreWorldCount.toFixed());
     });
 
     function preventZoom(e) {
@@ -107,7 +103,6 @@ $(function() {
     }
 
     $("body").on("contextmenu", "img", function(e) {
-        console.log(":)");
         return false;
     });
 });

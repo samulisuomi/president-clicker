@@ -8,7 +8,6 @@ const io = require("socket.io")(http, {
       "http://presidentclicker.com:*" : "http://localhost:8080" // disable localhost in prod
 });
 const Big = require("big.js");
-const CronJob = require("cron").CronJob;
 const debugLog = require("debug-log")("debug");
 
 const fileName = "score.json";
