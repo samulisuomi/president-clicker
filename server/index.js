@@ -20,6 +20,8 @@ const config = {
 };
 const pool = new pg.Pool(config);
 
+const CronJob = require("cron").CronJob;
+
 const exitFileName = "score.json.exit";
 
 var trumpCount;
@@ -59,7 +61,7 @@ io.on("connection", function(socket) {
 });
 
 http.listen(3000, function() {
-    pool.query('select hillary, trump from score', function(err, result) {
+    pool.query("select hillary, trump from score", function(err, result) {
         console.log("Got score from database:\nhillary: " + result.rows[0].hillary + "\ntrump " + result.rows[0].trump);
         trumpCount = new Big(result.rows[0].trump);
         hillaryCount = new Big(result.rows[0].hillary);
@@ -99,7 +101,7 @@ process.on("uncaughtException", exitHandler.bind(null, {
 setInterval(function() {
     if (trumpCount && trumpCountPreviousBackup && hillaryCount && hillaryCountPreviousBackup) {
         if (!trumpCount.eq(trumpCountPreviousBackup) || !hillaryCount.eq(hillaryCountPreviousBackup)) {
-            pool.query('update score set hillary = $1, trump = $2', [hillaryCount.toFixed(), trumpCount.toFixed()],
+            pool.query("update score set hillary = $1, trump = $2", [hillaryCount.toFixed(), trumpCount.toFixed()],
                 function(err, result) {
                     debugLog("Database insert to score succeeded!");
                     trumpCountPreviousBackup = new Big(trumpCount);
@@ -109,13 +111,18 @@ setInterval(function() {
     }
 }, 10000);
 
-// Save score every 1 minutes (TODO: cron and every 1 hour)
-setInterval(function() {
-    pool.query('insert into score_history (timestamp, hillary, trump, SOCKETS_SOCKETS_LENGTH, SOCKETS_CONNECTED_LENGTH) values (current_timestamp, $1, $2, $3, $4)', [hillaryCount.toFixed(), trumpCount.toFixed(), Object.keys(io.sockets.sockets).length, Object.keys(io.sockets.connected).length],
+// Save score every hour (TODO: right cron after seems like this is working):
+const scoreHistoryJob = new CronJob("15 * * * * *", function() {
+    console.log("scoreHistoryJob started!")
+    pool.query("insert into score_history (timestamp, hillary, trump, SOCKETS_SOCKETS_LENGTH, SOCKETS_CONNECTED_LENGTH) values (current_timestamp, $1, $2, $3, $4)", [hillaryCount.toFixed(), trumpCount.toFixed(), Object.keys(io.sockets.sockets).length, Object.keys(io.sockets.connected).length],
         function(err, result) {
             debugLog("Database insert to score_history succeeded!");
         });
-}, 60000);
+  }, function () {
+      console.log("scoreHistoryJob stopped!")
+  },
+  true /* Start the job right now */
+);
 
 // Manually garbage collect every 30 secs if flag set
 setInterval(function() {
