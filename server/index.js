@@ -3,17 +3,27 @@ const http = require("http").Server(app);
 const fs = require("fs");
 const io = require("socket.io")(http, {
     path: "/presidentclicker/socket.io",
-    transports: ['websocket'],
+    transports: ["websocket"],
     origins: process.env.NODE_ENV === "production" ?
-      "http://presidentclicker.com:*" : "http://localhost:8080" // disable localhost in prod
+        "http://presidentclicker.com:*" : "http://localhost:8080" // disable localhost in prod
 });
 const Big = require("big.js");
 const debugLog = require("debug-log")("debug");
+var Pool = require("pg").Pool;
+var config = {
+    host: "localhost",
+    user: "presidentclicker",
+    password: "vaihdamut",
+    database: "presidentclicker",
+};
 
 const fileName = "score.json";
+const exitFileName = "score.json.exit";
 
 var trumpCount;
+var trumpCountPreviousBackup = new Big(-1);
 var hillaryCount;
+var hillaryCountPreviousBackup = new Big(-1);
 
 app.disable("x-powered-by");
 
@@ -69,7 +79,10 @@ const exitHandler = function(options, err) {
     console.log("exitHandler");
     if (err) console.log("- " + err.stack);
     try {
-      fs.writeFileSync(fileName + ".exit", JSON.stringify({"t": trumpCount.toFixed(), "h": hillaryCount.toFixed()}), "utf8");
+        fs.writeFileSync(exitFileName, JSON.stringify({
+            "t": trumpCount.toFixed(),
+            "h": hillaryCount.toFixed()
+        }), "utf8");
     } catch (err) {
         console.log("Error writing exit file");
     }
@@ -78,11 +91,16 @@ const exitHandler = function(options, err) {
 
 const saveFile = function(fileName) {
     debugLog("Backing up score...");
-    fs.writeFile(fileName, JSON.stringify({"t": trumpCount.toFixed(), "h": hillaryCount.toFixed()}), "utf8", function(err) {
+    fs.writeFile(fileName, JSON.stringify({
+        "t": trumpCount.toFixed(),
+        "h": hillaryCount.toFixed()
+    }), "utf8", function(err) {
         if (err) {
             console.log("ERROR: File backup failed.");
         } else {
             debugLog("Backup succeeded!");
+            trumpCountPreviousBackup = new Big(trumpCount);
+            hillaryCountPreviousBackup = new Big(hillaryCount);
         }
     });
 }
@@ -91,14 +109,22 @@ const saveFile = function(fileName) {
 process.on("exit", exitHandler.bind(null));
 
 //catches ctrl+c event
-process.on("SIGINT", exitHandler.bind(null, {exit:true}));
+process.on("SIGINT", exitHandler.bind(null, {
+    exit: true
+}));
 
 //catches uncaught exceptions
-process.on("uncaughtException", exitHandler.bind(null, {exit:true}));
+process.on("uncaughtException", exitHandler.bind(null, {
+    exit: true
+}));
 
-// Save score to file every 10 seconds:
+// Save score to DB every 10 seconds:
 setInterval(function() {
-    saveFile(fileName);
+    if (trumpCount && trumpCountPreviousBackup && hillaryCount && hillaryCountPreviousBackup) {
+        if (!trumpCount.eq(trumpCountPreviousBackup) || !hillaryCount.eq(hillaryCountPreviousBackup)) {
+            saveFile(fileName);
+        }
+    }
 }, 10000);
 
 // Manually garbage collect every 30 secs if flag set
@@ -107,7 +133,7 @@ setInterval(function() {
         debugLog("Calling global.gc()");
         global.gc();
     } else {
-        console.log('Garbage collection unavailable.  Pass --expose-gc ' +
-            'when launching node to enable forced garbage collection.');
+        console.log("Garbage collection unavailable.  Pass --expose-gc " +
+            "when launching node to enable forced garbage collection.");
     }
 }, 30000);
