@@ -1,6 +1,7 @@
 const app = require("express")();
 const http = require("http").Server(app);
 const fs = require("fs");
+
 const io = require("socket.io")(http, {
     path: "/presidentclicker/socket.io",
     transports: ["websocket"],
@@ -9,15 +10,16 @@ const io = require("socket.io")(http, {
 });
 const Big = require("big.js");
 const debugLog = require("debug-log")("debug");
-var Pool = require("pg").Pool;
-var config = {
+
+const pg = require("pg");
+const config = {
     host: "localhost",
     user: "presidentclicker",
     password: "vaihdamut",
     database: "presidentclicker",
 };
+const pool = new pg.Pool(config);
 
-const fileName = "score.json";
 const exitFileName = "score.json.exit";
 
 var trumpCount;
@@ -57,20 +59,11 @@ io.on("connection", function(socket) {
 });
 
 http.listen(3000, function() {
-    var backup;
-    try {
-        backup = JSON.parse(fs.readFileSync(fileName, "utf8"));
-        trumpCount = new Big(backup.t);
-        hillaryCount = new Big(backup.h);
-    } catch (err) {
-        if (err.code === "ENOENT") {
-            console.log("Backup not found, starting score from zero!");
-            trumpCount = new Big(0);
-            hillaryCount = new Big(0);
-        } else {
-            throw err;
-        }
-    }
+    pool.query('select hillary, trump from score', function(err, result) {
+        console.log("Got score from database:\nhillary: " + result.rows[0].hillary + "\ntrump " + result.rows[0].trump);
+        trumpCount = new Big(result.rows[0].trump);
+        hillaryCount = new Big(result.rows[0].hillary);
+    });
     console.log("process.env.NODE_ENV=" + process.env.NODE_ENV);
     console.log("listening on *:3000");
 });
@@ -89,22 +82,6 @@ const exitHandler = function(options, err) {
     if (options.exit) process.exit();
 }
 
-const saveFile = function(fileName) {
-    debugLog("Backing up score...");
-    fs.writeFile(fileName, JSON.stringify({
-        "t": trumpCount.toFixed(),
-        "h": hillaryCount.toFixed()
-    }), "utf8", function(err) {
-        if (err) {
-            console.log("ERROR: File backup failed.");
-        } else {
-            debugLog("Backup succeeded!");
-            trumpCountPreviousBackup = new Big(trumpCount);
-            hillaryCountPreviousBackup = new Big(hillaryCount);
-        }
-    });
-}
-
 //do something when app is closing
 process.on("exit", exitHandler.bind(null));
 
@@ -118,14 +95,27 @@ process.on("uncaughtException", exitHandler.bind(null, {
     exit: true
 }));
 
-// Save score to DB every 10 seconds:
+// Save score to DB every 10 seconds if either score has changed:
 setInterval(function() {
     if (trumpCount && trumpCountPreviousBackup && hillaryCount && hillaryCountPreviousBackup) {
         if (!trumpCount.eq(trumpCountPreviousBackup) || !hillaryCount.eq(hillaryCountPreviousBackup)) {
-            saveFile(fileName);
+            pool.query('update score set hillary = $1, trump = $2', [hillaryCount.toFixed(), trumpCount.toFixed()],
+                function(err, result) {
+                    debugLog("Database insert to score succeeded!");
+                    trumpCountPreviousBackup = new Big(trumpCount);
+                    hillaryCountPreviousBackup = new Big(hillaryCount);
+                });
         }
     }
 }, 10000);
+
+// Save score every 1 minutes (TODO: cron and every 1 hour)
+setInterval(function() {
+    pool.query('insert into score_history (timestamp, hillary, trump, SOCKETS_SOCKETS_LENGTH, SOCKETS_CONNECTED_LENGTH) values (current_timestamp, $1, $2, $3, $4)', [hillaryCount.toFixed(), trumpCount.toFixed(), Object.keys(io.sockets.sockets).length, Object.keys(io.sockets.connected).length],
+        function(err, result) {
+            debugLog("Database insert to score_history succeeded!");
+        });
+}, 60000);
 
 // Manually garbage collect every 30 secs if flag set
 setInterval(function() {
