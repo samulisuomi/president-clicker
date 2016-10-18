@@ -4,14 +4,17 @@
 
 ## server
 
-See deployment/database.sql for how to setup database.
+See database/database.sql for how to setup database.
 
 Dev:
 
 ```npm install
 set NODE_DEBUG=debug && set NODE_ENV=development && node --expose-gc index.js```
 
-Database:
+Use dev database:
+Install local postgres and monkey the settings.
+
+Use prod database:
 `ssh -L 63333:localhost:5432 presidentclicker@37.139.14.210`
 Then you can `jdbc:postgresql://127.0.0.1:63333/presidentclicker` etc.
 
@@ -23,11 +26,11 @@ See deployment/database.sql for how to setup database.
 ```git clone
 cd president-clicker/server
 npm install
-pm2 start index.js --node-args="--expose-gc"```
+sh start_prod.sh```
 Later:
 ```git pull
 (npm install)
-pm2 restart index```
+sh start_prod.sh```
 
 
 ```watch tail -n20 ~/.pm2/logs/index-out-0.log ~/.pm2/logs/index-error-0.log```
