@@ -113,6 +113,7 @@ setInterval(function() {
 
 // Save score every hour (TODO: right cron after seems like this is working):
 const scoreHistoryJob = new CronJob("15 * * * * *", function() {
+    // TODO: Change to debug log!
     console.log("scoreHistoryJob started!")
     pool.query("insert into score_history (timestamp, hillary, trump, SOCKETS_SOCKETS_LENGTH, SOCKETS_CONNECTED_LENGTH) values (current_timestamp, $1, $2, $3, $4)", [hillaryCount.toFixed(), trumpCount.toFixed(), Object.keys(io.sockets.sockets).length, Object.keys(io.sockets.connected).length],
         function(err, result) {

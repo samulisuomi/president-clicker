@@ -124,6 +124,14 @@ img {
     user-drag: none;
 }
 
+#trump, #hillary {
+    transition: transform 0.1s ease-in;
+}
+
+#trump:active, #hillary:active {
+    transform: scale(0.8);
+}
+
 footer {
     padding-bottom: 12px;
 }
