@@ -32,6 +32,12 @@ h1 {
     text-shadow: 6px 6px black;
 }
 
+h2 {
+    font-size: 150%;
+    font-weight: 700;
+    text-shadow: 4px 4px black;
+}
+
 p {
     font-size: 100%;
     line-height: 1.2;
@@ -71,8 +77,8 @@ header {
 .rowItem {
     padding-left: 18px;
     padding-right: 18px;
-    padding-top: 9px;
-    padding-bottom: 9px;
+    padding-top: 7px;
+    padding-bottom: 7px;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -124,6 +130,7 @@ img {
     user-drag: none;
 }
 
+
 /*#trump, #hillary {
     transition: transform 0.1s ease-in;
 }
@@ -133,5 +140,36 @@ img {
 }*/
 
 footer {
-    padding-bottom: 0;
+    padding-bottom: 18px;
+}
+
+a {
+    color: white;
+    transition: color .25s;
+}
+
+a:hover {
+    color: #c1c1c1;
+}
+
+.modal {
+    text-align: center;
+    background-color: #1b2c40;
+}
+
+.modal h2:first-child {
+    padding-top: 0;
+}
+
+.modal h2 {
+    color: #c1c1c1;
+    padding-top: 6px;
+}
+
+.modal footer {
+    padding-top: 18px;
+}
+
+.modal a.close-modal {
+    display: none;
 }

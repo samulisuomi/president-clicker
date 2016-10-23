@@ -21,6 +21,9 @@ $(function() {
     var hillaryScore = $("#hillaryScore");
     var trumpScoreCount = null;
     var hillaryScoreCount = null;
+    var openAbout = $("#openAbout");
+    var closeAbout = $("#closeAbout");
+    var about = $("#about");
 
     if (typeof(Storage) !== "undefined") {
         if (localStorage.h && localStorage.t) {
@@ -56,7 +59,7 @@ $(function() {
         $("#problem").show();
     });
 
-    trump.click(function() {
+    trump.click(function(event) {
         socket.emit("t", "1");
         trumpScoreCount = trumpScoreCount.plus(1);
         saveToLocalStorage("t", trumpScoreCount.toFixed());
@@ -65,10 +68,11 @@ $(function() {
             trumpScoreWorldCount = trumpScoreWorldCount.plus(1);
             trumpScoreWorld.text(trumpScoreWorldCount.toFixed());
         }
+        event.stopPropagation();
         return false;
     });
 
-    hillary.click(function() {
+    hillary.click(function(event) {
         socket.emit("h", "1");
         hillaryScoreCount = hillaryScoreCount.plus(1);
         saveToLocalStorage("h", hillaryScoreCount.toFixed());
@@ -77,6 +81,7 @@ $(function() {
             hillaryScoreWorldCount = hillaryScoreWorldCount.plus(1);
             hillaryScoreWorld.text(hillaryScoreWorldCount.toFixed());
         }
+        event.stopPropagation();
         return false;
     });
 
@@ -90,7 +95,7 @@ $(function() {
         hillaryScoreWorld.text(hillaryScoreWorldCount.toFixed());
     });
 
-    function preventZoom(e) {
+    function preventZoom(event) {
         var t2 = e.timeStamp;
         var t1 = e.currentTarget.dataset.lastTouch || t2;
         var dt = t2 - t1;
@@ -99,11 +104,28 @@ $(function() {
 
         if (!dt || dt > 500 || fingers > 1) return; // not double-tap
 
-        e.preventDefault();
-        e.target.click();
+        event.preventDefault();
+        event.target.click();
     }
 
     $("body").on("contextmenu", "img", function(e) {
+        return false;
+    });
+
+    openAbout.click(function(event) {
+        about.modal({
+            fadeDuration: 100
+        });
+        event.stopPropagation();
+        return false;
+    });
+
+    closeAbout.click(function(event) {
+        $.modal.close();
+        // Because there's a bug with the modal:
+        about.css("display", "none");
+        window.location.href
+        event.stopPropagation();
         return false;
     });
 });
