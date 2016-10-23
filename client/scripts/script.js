@@ -52,6 +52,7 @@ $(function() {
     socket.io.on("connect_error", function(err) {
         trumpScoreWorldCount = null;
         hillaryScoreWorldCount = null;
+        $("#problemText").html("Unfortunately there's some problem with the server connection.");
         $("#problem").show();
     });
 
