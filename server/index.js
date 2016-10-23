@@ -13,10 +13,10 @@ const debugLog = require("debug-log")("debug");
 
 const pg = require("pg");
 const config = {
-    host: "localhost",
-    user: "presidentclicker",
-    password: "vaihdamut",
-    database: "presidentclicker",
+    host: process.env.DB_SETTINGS_HOST || "localhost",
+    user: process.env.DB_SETTINGS_USER || "presidentclicker",
+    password: process.env.DB_SETTINGS_PASSWORD || "vaihdamut",
+    database: process.env.DB_SETTINGS_DATABASE || "presidentclicker",
 };
 const pool = new pg.Pool(config);
 
@@ -62,12 +62,20 @@ io.on("connection", function(socket) {
 
 http.listen(3000, function() {
     pool.query("select hillary, trump from score", function(err, result) {
+        if (err) {
+            debugLog(err.toString());
+        }
         console.log("Got score from database:\nhillary: " + result.rows[0].hillary + "\ntrump " + result.rows[0].trump);
         trumpCount = new Big(result.rows[0].trump);
         hillaryCount = new Big(result.rows[0].hillary);
     });
     console.log("process.env.NODE_ENV=" + process.env.NODE_ENV);
     console.log("listening on *:3000");
+    debugLog("DB settings:");
+    debugLog("process.env.DB_SETTINGS_HOST=" + process.env.DB_SETTINGS_HOST);
+    debugLog("process.env.DB_SETTINGS_USER=" + process.env.DB_SETTINGS_USER);
+    debugLog("process.env.DB_SETTINGS_PASSWORD=" + process.env.DB_SETTINGS_PASSWORD);
+    debugLog("process.env.DB_SETTINGS_PASSWORD=" + process.env.DB_SETTINGS_DATABASE);
 });
 
 const exitHandler = function(options, err) {
