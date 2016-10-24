@@ -14,7 +14,11 @@ set NODE_DEBUG=debug && set NODE_ENV=development && node --expose-gc index.js```
 Use dev database:
 Install local postgres and monkey the settings.
 
-Use prod database:
+Tunnel to test DB:
+`ssh -L 5432:psql1.n.kapsi.fi:5432 <user>@kapsi.fi`
+Then you can `jdbc:postgresql://localhost:5432/<dbname>`
+
+Tunnel to prod DB:
 `ssh -L 63333:localhost:5432 presidentclicker@37.139.14.210`
 Then you can `jdbc:postgresql://127.0.0.1:63333/presidentclicker` etc.
 

@@ -75,7 +75,7 @@ http.listen(3000, function() {
     debugLog("process.env.DB_SETTINGS_HOST=" + process.env.DB_SETTINGS_HOST);
     debugLog("process.env.DB_SETTINGS_USER=" + process.env.DB_SETTINGS_USER);
     debugLog("process.env.DB_SETTINGS_PASSWORD=" + process.env.DB_SETTINGS_PASSWORD);
-    debugLog("process.env.DB_SETTINGS_PASSWORD=" + process.env.DB_SETTINGS_DATABASE);
+    debugLog("process.env.DB_SETTINGS_DATABASE=" + process.env.DB_SETTINGS_DATABASE);
 });
 
 const exitHandler = function(options, err) {
@@ -119,10 +119,9 @@ setInterval(function() {
     }
 }, 10000);
 
-// Save score every hour (TODO: right cron after seems like this is working):
-const scoreHistoryJob = new CronJob("15 * * * * *", function() {
-    // TODO: Change to debug log!
-    console.log("scoreHistoryJob started!")
+// Save score every 15 mins:
+const scoreHistoryJob = new CronJob("* 0,15,30,45 * * * *", function() {
+      debugLog("scoreHistoryJob started!");
     pool.query("insert into score_history (timestamp, hillary, trump, SOCKETS_SOCKETS_LENGTH, SOCKETS_CONNECTED_LENGTH) values (current_timestamp, $1, $2, $3, $4)", [hillaryCount.toFixed(), trumpCount.toFixed(), Object.keys(io.sockets.sockets).length, Object.keys(io.sockets.connected).length],
         function(err, result) {
             debugLog("Database insert to score_history succeeded!");
