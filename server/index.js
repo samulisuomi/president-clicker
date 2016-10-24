@@ -120,7 +120,7 @@ setInterval(function() {
 }, 10000);
 
 // Save score every 15 mins:
-const scoreHistoryJob = new CronJob("0 0,15,30,45 * * * *", function() {
+const scoreHistoryJob = new CronJob("0,15,30,45 * * * *", function() {
       debugLog("scoreHistoryJob started!");
     pool.query("insert into score_history (timestamp, hillary, trump, SOCKETS_SOCKETS_LENGTH, SOCKETS_CONNECTED_LENGTH) values (current_timestamp, $1, $2, $3, $4)", [hillaryCount.toFixed(), trumpCount.toFixed(), Object.keys(io.sockets.sockets).length, Object.keys(io.sockets.connected).length],
         function(err, result) {
