@@ -46,6 +46,15 @@ app.get("/ping", function(req, res) {
     res.send("pong");
 });
 
+app.get("/stats", function(req, res) {
+    res.json({
+        hillary: hillaryCount.toFixed(),
+        trump: trumpCount.toFixed(),
+        socketsSocketsLength: Object.keys(io.sockets.sockets).length,
+        socketsConnectedLength: Object.keys(io.sockets.connected).length
+    });
+});
+
 io.on("connection", function(socket) {
     socket.emit("s.t", trumpCount)
     socket.emit("s.h", hillaryCount);
