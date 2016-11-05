@@ -132,7 +132,7 @@ const scoreHistoryJob = new CronJob("0,15,30,45 * * * *", function() {
   true /* Start the job right now */
 );
 
-// Manually garbage collect every 30 secs if flag set
+// Manually garbage collect every 15 secs if flag set
 setInterval(function() {
     if (global.gc) {
         debugLog("Calling global.gc()");
@@ -141,4 +141,4 @@ setInterval(function() {
         console.log("Garbage collection unavailable.  Pass --expose-gc " +
             "when launching node to enable forced garbage collection.");
     }
-}, 30000);
+}, 15000);
