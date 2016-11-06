@@ -39,8 +39,8 @@ $(function() {
         hillaryScoreCount = new Big(0);
     }
 
-    trumpScore.text(trumpScoreCount.toFixed());
-    hillaryScore.text(hillaryScoreCount.toFixed());
+    trumpScore.text(formatScore(trumpScoreCount.toFixed()));
+    hillaryScore.text(formatScore(hillaryScoreCount.toFixed()));
 
     function saveToLocalStorage(key, value) {
         if (typeof(Storage) !== "undefined") {
@@ -63,10 +63,10 @@ $(function() {
         socket.emit("t", "1");
         trumpScoreCount = trumpScoreCount.plus(1);
         saveToLocalStorage("t", trumpScoreCount.toFixed());
-        trumpScore.text(trumpScoreCount.toFixed());
+        trumpScore.text(formatScore(trumpScoreCount.toFixed()));
         if (trumpScoreWorldCount !== null) {
             trumpScoreWorldCount = trumpScoreWorldCount.plus(1);
-            trumpScoreWorld.text(trumpScoreWorldCount.toFixed());
+            trumpScoreWorld.text(formatScore(trumpScoreWorldCount.toFixed()));
         }
         event.stopPropagation();
         return false;
@@ -76,10 +76,10 @@ $(function() {
         socket.emit("h", "1");
         hillaryScoreCount = hillaryScoreCount.plus(1);
         saveToLocalStorage("h", hillaryScoreCount.toFixed());
-        hillaryScore.text(hillaryScoreCount.toFixed());
+        hillaryScore.text(formatScore(hillaryScoreCount.toFixed()));
         if (hillaryScoreWorldCount !== null) {
             hillaryScoreWorldCount = hillaryScoreWorldCount.plus(1);
-            hillaryScoreWorld.text(hillaryScoreWorldCount.toFixed());
+            hillaryScoreWorld.text(formatScore(hillaryScoreWorldCount.toFixed()));
         }
         event.stopPropagation();
         return false;
@@ -87,12 +87,12 @@ $(function() {
 
     socket.on("s.t", function(msg) {
         trumpScoreWorldCount = new Big(msg);
-        trumpScoreWorld.text(trumpScoreWorldCount.toFixed());
+        trumpScoreWorld.text(formatScore(trumpScoreWorldCount.toFixed()));
     });
 
     socket.on("s.h", function(msg) {
         hillaryScoreWorldCount = new Big(msg);
-        hillaryScoreWorld.text(hillaryScoreWorldCount.toFixed());
+        hillaryScoreWorld.text(formatScore(hillaryScoreWorldCount.toFixed()));
     });
 
     function preventZoom(event) {
@@ -128,4 +128,14 @@ $(function() {
         event.stopPropagation();
         return false;
     });
+
+    function formatScore(str) {
+      if (str) {
+          return str.split("").reverse().join("")
+              .match(/.{1,3}/g).join("\u200B,")
+              .split("").reverse().join("");
+      } else {
+          return null;
+      }
+    }
 });

@@ -88,7 +88,6 @@ header {
 
 .scoreTextWorld {
     word-wrap: break-word;
-    word-break: break-all;
     text-shadow: 2px 2px white;
     font-size: 300%;
     align-self: center;
@@ -96,7 +95,6 @@ header {
 
 .scoreText {
     word-wrap: break-word;
-    word-break: break-all;
     text-shadow: 2px 2px black;
     font-size: 300%;
     align-self: center;
