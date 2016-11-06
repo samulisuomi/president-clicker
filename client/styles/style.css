@@ -184,9 +184,11 @@ a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: nowrap;
 }
 
 .adItem {
     width: 320px;
     height: 50px;
+    flex-wrap: nowrap;
 }
