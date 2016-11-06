@@ -176,3 +176,8 @@ a:hover {
 .modal a.close-modal {
     display: none;
 }
+
+.ad {
+    width: 100%;
+    max-width: 320px;
+}
