@@ -46,8 +46,9 @@ app.get("/ping", function(req, res) {
     res.send("pong");
 });
 
-app.get("/stats", function(req, res) {
+app.get("/score", function(req, res) {
     res.json({
+        timestamp: new Date(),
         hillary: hillaryCount.toFixed(),
         trump: trumpCount.toFixed(),
         socketsSocketsLength: Object.keys(io.sockets.sockets).length,
