@@ -177,7 +177,17 @@ a:hover {
     display: none;
 }
 
-.ad {
+.adRow {
     width: 100%;
-    max-width: 320px;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.adItem {
+    width: 320px;
+    height: 50px;
+    background-color: black;
 }
