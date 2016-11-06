@@ -12,7 +12,7 @@ html, body {
 
 @media only screen and (max-width: 768px) {
     body {
-        font-size: 13px;
+        font-size: 12px;
     }
 }
 
@@ -77,8 +77,8 @@ header {
 .rowItem {
     padding-left: 18px;
     padding-right: 18px;
-    padding-top: 7px;
-    padding-bottom: 7px;
+    padding-top: 0;
+    padding-bottom: 0;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -87,13 +87,16 @@ header {
 }
 
 .scoreTextWorld {
-    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-all;
     text-shadow: 2px 2px white;
     font-size: 300%;
+    align-self: center;
 }
 
 .scoreText {
-    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-all;
     text-shadow: 2px 2px black;
     font-size: 300%;
     align-self: center;
@@ -109,7 +112,9 @@ header {
 
 #problem {
     display: none;
-    padding-bottom: 18px;
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-bottom: 0;
 }
 
 .faces, img {
