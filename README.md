@@ -25,7 +25,7 @@ To test a built version, run `gulp` and `http-server dist -p 8080` (install glob
 
 1. Install Docker
 2. Install local postgres
- * `docker run --name presidentclicker-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres`
+ * `docker run --name presidentclicker-postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres`
 3. Init database:
  * `docker exec -it presidentclicker-postgres bash` 
  * `psql -U postgres`
