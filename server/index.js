@@ -6,7 +6,7 @@ const io = require("socket.io")(http, {
     path: "/presidentclicker/socket.io",
     transports: ["websocket"],
     origins: process.env.NODE_ENV === "production" ?
-        "http://presidentclicker.com:*" : "http://localhost:8080" // disable localhost in prod
+        "http://presidentclicker.com:*" : "http://localhost:8080"
 });
 const Big = require("big.js");
 const debugLog = require("debug-log")("debug");
@@ -31,7 +31,8 @@ var hillaryCountPreviousBackup = new Big(-1);
 
 app.disable("x-powered-by");
 
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
+    // TODO: Remove these as they stop no one from spamming the server if they want to:
     if (process.env.NODE_ENV === "production") {
         res.header("Access-Control-Allow-Origin", "http://presidentclicker.com");
     } else {
@@ -42,11 +43,11 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get("/ping", function(req, res) {
+app.get("/ping", (req, res) => {
     res.send("pong");
 });
 
-app.get("/score", function(req, res) {
+app.get("/score", (req, res) => {
     res.json({
         timestamp: new Date(),
         hillary: hillaryCount.toFixed(),
@@ -56,22 +57,22 @@ app.get("/score", function(req, res) {
     });
 });
 
-io.on("connection", function(socket) {
+io.on("connection", socket => {
     socket.emit("s.t", trumpCount)
     socket.emit("s.h", hillaryCount);
     debugLog("a user connected");
-    socket.on("t", function(msg) {
+    socket.on("t", msg => {
         trumpCount = trumpCount.plus(1);
         socket.volatile.broadcast.emit("s.t", trumpCount)
     });
-    socket.on("h", function(msg) {
+    socket.on("h", msg => {
         hillaryCount = hillaryCount.plus(1);
         socket.volatile.broadcast.emit("s.h", hillaryCount);
     });
 });
 
-http.listen(3000, function() {
-    pool.query("select hillary, trump from score", function(err, result) {
+http.listen(3000, () => {
+    pool.query("select hillary, trump from score", (err, result) => {
         if (err) {
             debugLog(err.toString());
         }
@@ -82,13 +83,13 @@ http.listen(3000, function() {
     console.log("process.env.NODE_ENV=" + process.env.NODE_ENV);
     console.log("listening on *:3000");
     debugLog("DB settings:");
-    debugLog("process.env.DB_SETTINGS_HOST=" + process.env.DB_SETTINGS_HOST);
-    debugLog("process.env.DB_SETTINGS_USER=" + process.env.DB_SETTINGS_USER);
-    debugLog("process.env.DB_SETTINGS_PASSWORD=" + process.env.DB_SETTINGS_PASSWORD);
-    debugLog("process.env.DB_SETTINGS_DATABASE=" + process.env.DB_SETTINGS_DATABASE);
+    debugLog("host=" + config.host);
+    debugLog("user=" + config.user);
+    debugLog("password=" + config.password);
+    debugLog("database=" + config.database);
 });
 
-const exitHandler = function(options, err) {
+const exitHandler = (options, err) => {
     console.log("exitHandler");
     if (err) console.log("- " + err.stack);
     try {
@@ -102,48 +103,58 @@ const exitHandler = function(options, err) {
     if (options.exit) process.exit();
 }
 
-//do something when app is closing
+// When app is closing:
 process.on("exit", exitHandler.bind(null));
 
-//catches ctrl+c event
+// Catches the Ctrl+C event:
 process.on("SIGINT", exitHandler.bind(null, {
     exit: true
 }));
 
-//catches uncaught exceptions
+// Catches uncaught exceptions:
 process.on("uncaughtException", exitHandler.bind(null, {
     exit: true
 }));
 
 // Save score to DB every 10 seconds if either score has changed:
-setInterval(function() {
+setInterval(() => {
     if (trumpCount && trumpCountPreviousBackup && hillaryCount && hillaryCountPreviousBackup) {
         if (!trumpCount.eq(trumpCountPreviousBackup) || !hillaryCount.eq(hillaryCountPreviousBackup)) {
-            pool.query("update score set hillary = $1, trump = $2", [hillaryCount.toFixed(), trumpCount.toFixed()],
-                function(err, result) {
+            pool.query(
+                "update score set hillary = $1, trump = $2",
+                [hillaryCount.toFixed(), trumpCount.toFixed()],
+                (err, result) => {
+                    // TODO: Handle errors
                     debugLog("Database insert to score succeeded!");
                     trumpCountPreviousBackup = new Big(trumpCount);
                     hillaryCountPreviousBackup = new Big(hillaryCount);
-                });
+                }
+            );
         }
     }
 }, 10000);
 
-// Save score every 15 mins:
-const scoreHistoryJob = new CronJob("0,15,30,45 * * * *", function() {
-      debugLog("scoreHistoryJob started!");
-    pool.query("insert into score_history (timestamp, hillary, trump, SOCKETS_SOCKETS_LENGTH, SOCKETS_CONNECTED_LENGTH) values (current_timestamp, $1, $2, $3, $4)", [hillaryCount.toFixed(), trumpCount.toFixed(), Object.keys(io.sockets.sockets).length, Object.keys(io.sockets.connected).length],
-        function(err, result) {
-            debugLog("Database insert to score_history succeeded!");
-        });
-  }, function () {
+// Save score to the history table every 15 mins:
+const scoreHistoryJob = new CronJob("0,15,30,45 * * * *",
+    () => {
+        debugLog("scoreHistoryJob started!");
+        pool.query(
+            "insert into score_history (timestamp, hillary, trump, SOCKETS_SOCKETS_LENGTH, SOCKETS_CONNECTED_LENGTH) values (current_timestamp, $1, $2, $3, $4)",
+            [hillaryCount.toFixed(), trumpCount.toFixed(), Object.keys(io.sockets.sockets).length, Object.keys(io.sockets.connected).length],
+            (err, result) => {
+                // TODO: Handle errors
+                debugLog("Database insert to score_history succeeded!");
+            }
+        );
+    },
+    () => {
       console.log("scoreHistoryJob stopped!")
-  },
-  true /* Start the job right now */
+    },
+    true // Start the job immediately
 );
 
 // Manually garbage collect every 15 secs if flag set
-setInterval(function() {
+setInterval(() => {
     if (global.gc) {
         debugLog("Calling global.gc()");
         global.gc();

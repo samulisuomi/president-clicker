@@ -15,12 +15,12 @@ gulp.task("clean-dist", function() {
 
 gulp.task("copy-images", function () {
   return gulp.src(["images/**/*"])
-    .pipe(gulp.dest("dist/images")) // Outputs the file in the destination folder
+    .pipe(gulp.dest("dist/images"))
 })
 
 gulp.task("copy-favicon", function () {
   return gulp.src(["*.ico", "*.png", "*.xml", "manifest.json", "*.svg"])
-    .pipe(gulp.dest("dist/")) // Outputs the file in the destination folder
+    .pipe(gulp.dest("dist/"))
 })
 
 gulp.task("build", function() {

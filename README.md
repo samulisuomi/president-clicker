@@ -1,40 +1,63 @@
 # President Clicker
 
+Click the faces! http://presidentclicker.com
+
 ## client
+
+### Local development:
+
+* `npm install`
+* `npm run start-dev`
+
+To test a built version, run `gulp` and `http-server dist -p 8080` (install globally or use http-server in `/node_modules/`).
+
+### Deploy in prod
+
+1. Make sure `president-clicker` and `president-clicker-dist` projects are cloned in the same folder.
+2. `npm run build`
+3. Commit and push in `president-clicker-dist`.
 
 ## server
 
-See database/database.sql for how to setup database.
+### Local development:
 
-Dev:
+#### Database:
 
-```npm install
-set NODE_DEBUG=debug && set NODE_ENV=development && node --expose-gc index.js```
+1. Install Docker
+2. Install local postgres
+ * `docker run --name presidentclicker-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres`
+3. Init database:
+ * `docker exec -it presidentclicker-postgres bash` 
+ * `psql -U postgres`
+ * Paste in stuff from `database/database.sql` 
 
-Use dev database:
-Install local postgres and monkey the settings.
+#### Run:
 
-Tunnel to test DB:
-`ssh -L 5432:psql1.n.kapsi.fi:5432 <user>@kapsi.fi`
-Then you can `jdbc:postgresql://localhost:5432/<dbname>`
+* `npm install`
+* `npm run start-dev`
 
-Tunnel to prod DB:
-`ssh -L 63333:localhost:5432 presidentclicker@37.139.14.210`
-Then you can `jdbc:postgresql://127.0.0.1:63333/presidentclicker` etc.
+### Deploy in prod
+    
+1. Setup a server, e.g. https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-16-04
 
-Deploy in prod (https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-16-04):
+2. Set ```process.env.NODE_ENV === "production"``` first.
 
-Set ```process.env.NODE_ENV === "production"``` first.
-See deployment/database.sql for how to setup database.
+* `git clone`
+* `cd president-clicker/server`
+* `npm install`
+* `sh start_prod.sh`
 
-```git clone
-cd president-clicker/server
-npm install
-sh start_prod.sh```
 Later:
-```git pull
-(npm install)
-sh start_prod.sh```
+* `git pull`
+* `(npm install)`
+* `sh start_prod.sh`
 
+Check pm2 logs: `watch tail -n20 ~/.pm2/logs/index-out-0.log ~/.pm2/logs/index-error-0.log`
 
-```watch tail -n20 ~/.pm2/logs/index-out-0.log ~/.pm2/logs/index-error-0.log```
+No fancy DevOpsidoodles, yet... ;)
+
+---
+
+### To Do
+* Integrate this and `president-clicker-dist` repos
+* Dockerize things (incl. nginx to have its configuration here as well).
