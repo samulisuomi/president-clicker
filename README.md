@@ -34,7 +34,7 @@ To test a built version, run `gulp` and `http-server dist -p 8080` (install glob
 #### Run:
 
 * `npm install`
-* `npm run start-dev`
+* `npm run start-dev-unix` on Mac/Linux, `npm run start-dev-windows` on Windows
 
 ### Deploy in prod
     

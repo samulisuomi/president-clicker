@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start-dev": "set NODE_DEBUG=debug&& set NODE_ENV=development&& set DB_SETTINGS_USER=postgres&& set DB_SETTINGS_PASSWORD=mysecretpassword&& node --expose-gc index.js",
+    "start-dev-unix": "NODE_DEBUG=debug NODE_ENV=development DB_SETTINGS_USER=postgres DB_SETTINGS_PASSWORD=mysecretpassword node --expose-gc index.js",
+    "start-dev-windows": "set NODE_DEBUG=debug&& set NODE_ENV=development&& set DB_SETTINGS_USER=postgres&& set DB_SETTINGS_PASSWORD=mysecretpassword&& node --expose-gc index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

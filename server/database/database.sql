@@ -2,7 +2,7 @@
 
 CREATE DATABASE presidentclicker;
 
-\CONNECT presidentclicker;
+\connect presidentclicker;
 
 CREATE TABLE SCORE (
     TRUMP TEXT,
