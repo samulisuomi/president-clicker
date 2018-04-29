@@ -59,5 +59,5 @@ No fancy DevOpsidoodles, yet... ;)
 ---
 
 ### To Do
-* Integrate this and `president-clicker-dist` repos
-* Dockerize things (incl. nginx to have its configuration here as well).
+
+- [ ] Integrate this and `president-clicker-dist` repos
